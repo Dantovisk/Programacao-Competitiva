@@ -1,30 +1,21 @@
-//como fala que a raridade é 2^n basta deixar os mais altos sem restricao
 #include <bits/stdc++.h>
+
 using namespace std;
 
-bool excluido [100010];
-set <int> resp;
-
 int main(){
-    int n, m;
-    cin>>n>>m;
+     srand(time(NULL));
+    int n = 63438297;
+    int v[100];
+    srand(time(NULL));
 
-    vector<vector<int>> adj(n+1);
+    for(int i=0; i<100; i++){
+        v[i] = rand() % 10000000 + 1;
+        cout<<v[i]<<" ";
+    } printf("\n");
 
-    int a, b;
-    for(int i=0; i<m; i++){
-        cin>>a>>b;
-        adj[max(a,b)].push_back(min(a,b));
-    }
+    for(int i=0; i<100; i++){
+        cout<<abs(v[i]-n)<<" ";
+    } printf("\n");
 
-    for(int i=n; i>0; i--){
-        if(!excluido[i]){
-            resp.insert(i);
-            for(int x: adj[i]) excluido[x] = true;
-        }
-    }
-
-    cout<<resp.size()<<endl;
-    for(int x: resp) cout<<x<<" ";
     return 0;
 }
