@@ -88,6 +88,12 @@
         "valarray": "cpp",
         "variant": "cpp",
         "format": "cpp",
-        "stacktrace": "cpp"
+        "stacktrace": "cpp",
+        "expected": "cpp",
+        "generator": "cpp",
+        "print": "cpp",
+        "spanstream": "cpp",
+        "stdfloat": "cpp",
+        "text_encoding": "cpp"
     }
 }

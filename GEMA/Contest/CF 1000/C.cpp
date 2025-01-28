@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++.h>    //esse nao passou em tudo :c
 #define MAXN 200010
 #define ll long long int 
 

@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>    //não é bem uma segtree
+using namespace std;        //esse exercicio apenas introduz o conceito lazy propagation
+
+#define MAXN 100010
+
+int tree[4*MAXN];
+int lazy[4*MAXN];
+
+void unlazy(int no, int l, int r){
+    if(lazy[no] == -1) return;
+
+    tree[no] = lazy[no];
+
+    if(r != l){
+        lazy [2*no] = lazy[no];
+        lazy [2*no + 1] = lazy[no];
+    }
+
+    lazy[no] = -1;
+}
+
+void update(int no, int i, int j, int l, int r, int val){
+    unlazy(no, i, j);
+    if(i > r || j < l) return;
+    if(i >= l && j <= r){
+        lazy[no] = val;
+        unlazy(no, i, j);
+        return;
+    }
+
+    int mid = (i+j)/2;
+
+    update(2*no, i, mid, l, r, val);
+    update(2*no + 1, mid+1, j, l, r, val);
+}
+
+int query(int no, int l, int r, int id){
+    unlazy(no, l, r);
+    
+    if (l == r) return tree[no];
+    int mid = (l + r) / 2;
+
+    if (id <= mid) {
+        return query(2 * no, l, mid, id);
+    } else {
+        return query(2 * no + 1, mid + 1, r, id);
+    }
+}
+
+int main(){
+    int n, m;
+    cin>>n>>m;
+
+    memset(lazy, -1, sizeof(lazy));
+
+    for(int i=0; i<m; i++){
+        int a, b, c, d;
+        cin>>a>>b;
+
+        if(a==2){
+            cout<<query(1, 1, n, b + 1)<<"\n";
+        } 
+        else if(a==1){
+            cin>>c>>d;
+            update(1, 1, n, b + 1, c, d);
+        }
+    }
+
+
+    return 0;
+}
