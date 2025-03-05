@@ -5,8 +5,8 @@ using namespace std;
 set <string> w;
 
 int main(){
-    //ios_base::sync_with_stdio(false);
-    //cin.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
     int n, q;
     cin>>n;
@@ -32,12 +32,6 @@ int main(){
             b = true;
             ptr++;
         }
-
-        /*
-        if(ptr != w.end()) cout<<"chegou no fim\n";
-        if((*ptr).compare(0, a.size(), a) == 0) 
-            cout<<*ptr<<" nao combina com "<<a<<"\n";
-        */
 
         if(!b) cout<<"No match.\n";
     }
