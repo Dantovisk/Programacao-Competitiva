@@ -1,7 +1,42 @@
-#include <bits/stdc++.h> //a ideia ta certa
-#define MAXN 200010       //falta fazer iterativo pra otimizar
+#include <bits/stdc++.h> // CSES - Path Queries 2
+#define MAXN 200010       
 
 using namespace std;
+
+//segtree de maximo
+int opmax (int a, int b) {
+    return max(a, b);
+}
+
+// *Template da lib do gema*
+// Example for segtree of sum:
+// int sum(int a, int b) { return a + b; }
+// segtree<int, 0, sum> seg;
+template<typename T, T zero, T (*op)(T, T) >
+struct segtree {
+	vector<T> seg;
+	int n;
+	segtree(int n_): n(n_) {
+		seg.assign(n_ + n_ + 5, zero);
+	}
+
+    //a query usa intervalo semi aberto [l, r)
+	T query(int l, int r) {
+		T ansl, ansr;
+		ansl = ansr = zero;
+		for(l += n, r += n; l < r; l >>= 1, r >>= 1) {
+			if(l&1) ansl = op(ansl, seg[l++]);
+			if(r&1) ansr = op(seg[--r], ansr);
+		}
+		return op(ansl, ansr);
+	}
+
+	void update(int p, T val) {
+		for(seg[p += n] = val; p >>= 1;) {
+			seg[p] = op(seg[2 * p], seg[2 * p + 1]);
+		}
+	}
+};
 
 int n, q;
 int v[MAXN];
@@ -12,8 +47,9 @@ int heavy[MAXN], depth[MAXN], tam[MAXN], par[MAXN], head[MAXN];
 int atual = 1;
 int id[MAXN];
 
-//segtree de maximo
-int segval[MAXN], tree[4*MAXN];
+//criando uma segtree de maximo
+segtree<int, 0, opmax> st(MAXN);
+
 /*
 queremos encontrar os filhos pesados, a profundidade,
 o pai, e o tamanho da subarvore de cada nó
@@ -51,51 +87,16 @@ void decompose(int u, int h){
     }
 }
 
-void build(int no, int l, int r){
-    if(l==r){
-        tree[no] = segval[l];
-        return;
-    }
-
-    int mid = (l+r)/2;
-    build(2*no, l, mid);
-    build(2*no+1, mid + 1, r);
-    tree[no] = max(tree[2*no], tree[2*no+1]);
-}
-
-void update(int no, int l, int r, int i, int val){
-    if(l>i || r<i) return;
-    if(l==r) {
-        tree[no] = val;
-        return;
-    }
-
-    int mid = (l+r)/2;
-    update(no*2, l, mid, i, val);
-    update(no*2+1, mid+1, r, i, val);
-
-    tree[no] = max(tree[2*no], tree[2*no+1]);
-}
-
-int query(int no, int i, int j, int l, int r){
-    if(i>r || j<l) return 0;
-    if(i>= l && j<=r) return tree[no];
-
-    int mid = (i+j)/2;
-    return max(query(2*no, i, mid, l, r), 
-        query(2*no+1, mid+1, j, l, r));
-}
-
 int path(int a, int b){
     int resp = 0;
     while(head[a] != head[b]){
         if(depth[head[b]] > depth[head[a]]) swap(a, b);
 
-        resp = max(resp, query(1, 1, n, id[head[a]], id[a]));
+        resp = max(resp, st.query(id[head[a]], id[a]+1));
         a = par[head[a]];
     }
     if(depth[b] > depth[a]) swap(a, b);
-    resp = max(resp, query(1, 1, n, id[b], id[a]));
+    resp = max(resp, st.query(id[b], id[a]+1));
     return resp;
 }
 
@@ -120,20 +121,18 @@ int main(){
     decompose(1, 1);
 
     for(int i =1; i<=n; i++){
-        segval[id[i]] = v[i];
+        st.update(id[i], v[i]);
     }
-    build(1, 1, n);
     
     for(int i =0; i<q; i++){
         int a, b, c;
         cin>>a>>b>>c;
         if(a==1){
-            update(1, 1, n, id[b], c);
+            st.update(id[b], c);
         }else{
             cout<<path(b, c)<<" ";
         }
     }
-
 
     return 0;
 }
