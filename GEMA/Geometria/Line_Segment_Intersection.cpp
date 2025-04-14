@@ -1,36 +1,54 @@
-#include <bits/stdc++.h> //CSES - Line Segment Intersection - IMPLEMENTEI ERRADO
-using namespace std;    // Resolvendo pelo método do livro do CSES (achei meio paia)
+#include <bits/stdc++.h> //CSES - Line Segment Intersection
+using namespace std;    // Resolvendo pelo método do USACO
+#define int long long
 
-typedef complex<double> point;
-#define x real()
-#define y imag()
-#define mp make_pair
+//template do USACO
+struct Ponto{
+    int x, y;
+    Ponto(int a = 0, int b = 0) : x(a), y(b){}
 
-auto pvet = [](point a, point b) {
-    return (conj(a) * b).y;
+    friend istream &operator>>(istream &in, Ponto &p) {
+		in >> p.x >> p.y;
+		return in;
+	}
 };
 
-//vê se o ponto p3 tá no segmento de reta entre p1 e p2
-bool noSeg(point p1, point p2, point p3){
-    return min(p1.x, p2.x) <= p3.x && max(p1.x,p2.x) >= p3.x &&
-    min(p1.y, p2.y) <= p3.y && max(p1.y,p2.y) >= p3.y;
+//faz o produto vetorial entre AB e AP
+int cross(Ponto a, Ponto b, Ponto p){
+    int res = (b.x - a.x)*(p.y-a.y) - (b.y-a.y)*(p.x-a.x);
+    if (res == 0) return 0;
+    return (res>0? 1: -1);
 }
 
-int main(){
+int32_t main(){
     int t;
     cin>>t;
     while(t--){
-        int a, b, c, d, e, f, g, h;
-        cin>>a>>b>>c>>d>>e>>f>>g>>h;
-        point p1(a,b), p2(c,d), p3(e,f), p4(g,h);
+        Ponto a, b, c, d;
 
-        //definindo os vetores v1 e v2
-        point vec1 = p2-p1, vec2 = p4 - p3;
+        cin>>a>>b>>c>>d;
         
-        bool resp = false;
+        int x1, x2, x3, x4, y1, y2, y3, y4;
+        x1 = min(a.x, b.x), x2 = max(a.x, b.x);
+        x3 = min(c.x, d.x), x4 = max(c.x, d.x);
+        y1 = min(a.y, b.y), y2 = max(a.y, b.y);
+        y3 = min(c.y, d.y), y4 = max(c.y, d.y);
+        
+        //os quadrados com diagonais AB e CD não se intersectam
+        if(x3 > x2 || x4 < x1 || y3 > y2 || y4 < y1 ){
+            cout<<"NO\n";
+        }
+        else{
+            //veremos se A e B estão em lados diferentes de CD, e vice versa
+            if(cross(a, b, c) * cross(a, b, d) <= 0 &&
+            cross(c, d, a) * cross(c, d, b) <= 0 ){
+                cout<<"YES\n";
+            }
+            else{
+                cout<<"NO\n";
+            }
+        }
 
-        
-        cout<<(resp?"YES\n":"NO\n");
     }
 
     return 0;
