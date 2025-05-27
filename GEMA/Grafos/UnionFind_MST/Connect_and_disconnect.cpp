@@ -7,8 +7,8 @@ int par[MAXN];
 int sz[MAXN];
 int components = 0;
 
-map<pair<int,int>, int> edges;
-vector<pair<int,int>> edgnum;
+map<pair<int,int>, int> edgeID;
+vector<pair<int,int>> edge;
 
 int tin [MAXN], tout[MAXN];
 int query[MAXN];
@@ -70,18 +70,18 @@ void dfs(int u, int l, int r){
     int cont = 0;
 
     for(auto id: tree[u]){
-        auto [x, y] = edgnum[id];
-        if(merge(x, y)) {cont++; cout<<"juntando "<<x<<" e "<<y<<"\n";}
+        auto [x, y] = edge[id];
+        if(merge(x, y)) cont++; //cout<<"juntando "<<x<<" e "<<y<<"\n";}
     }
 
     if(r == l){
         if(query[l]){
             cout<<components<<"\n";
             for(int i =1; i<=5; i++){
-                cout<<"Pai de "<<i<<": "<<par[i]<<"\n";
+                //cout<<"Pai de "<<i<<": "<<par[i]<<"\n";
             }
         }
-        cout<<"Usaremos "<<cont<<" rollbacks\n";
+        //cout<<"Usaremos "<<cont<<" rollbacks\n";
         while(cont--) rollback();
         return;
     }
@@ -94,16 +94,20 @@ void dfs(int u, int l, int r){
 }
 
 int main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+    freopen("connect.in", "r", stdin);
+    freopen("connect.out", "w", stdout);
+
+
+    //ios_base::sync_with_stdio(false);
+    //cin.tie(nullptr);
 
     int n, m;
     cin>>n>>m;
     components = n;
-    int idedg = 0;
-    int timer = 0;
+    int idedg = 1;
+    int timer = 1;
 
-    edgnum.push_back({-1, -1});
+    edge.push_back({-1, -1});
 
     for(int i =0; i<=n; i++){
         par[i] = i;
@@ -115,36 +119,31 @@ int main(){
         int b, c;
 
         if(a == '?'){
-            if(timer == 0){
-                cout<<components<<"\n";
-                timer++;
-            }
-            else{
-                query[timer] = 1;
-                timer++;
-            }
+            query[timer] = 1;
+            timer++;
             continue;
         }
+
         cin>>b>>c;
-        
         if(a=='+'){
             tin[idedg] = timer;
-            edges[{min(b, c), max(b,c)}] = ++idedg;
-            edgnum.push_back({min(b, c), max(b,c)});
+            edgeID[{min(b, c), max(b,c)}] = idedg++;
+            edge.push_back({min(b, c), max(b,c)});
             timer++;
         }
         else{
-            int id = edges[{min(b, c), max(b,c)}];
+            int id = edgeID[{min(b, c), max(b,c)}];
             tout[id] = timer;
+            timer++;
         }
 
     }
 
-    for(int i =0; i<=idedg; i++){
+    for(int i =1; i< idedg; i++){
         if(tout[i] == 0) tout[i] = timer-1;
     }
 
-    for(int i =1; i<= idedg; i++){
+    for(int i =1; i < idedg; i++){
         updTree(1, 1, timer, tin[i], tout[i],  i);
         //cout<<"foi "<<i<<"\n";
     }
