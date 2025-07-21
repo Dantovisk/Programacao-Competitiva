@@ -31,6 +31,7 @@
         "functional": "cpp",
         "regex": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "numbers": "cpp"
     }
 }
