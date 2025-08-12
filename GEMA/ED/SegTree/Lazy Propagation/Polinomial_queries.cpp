@@ -1,10 +1,11 @@
 #include <bits/stdc++.h>
 #define MAXN 200010
+#define ll long long
 
 using namespace std;
 
 //eh uma segtree de soma
-int tree[MAXN*4];
+ll tree[MAXN*4];
 int v[MAXN];
 int lazy[MAXN*4];
 
@@ -37,7 +38,7 @@ void unlazy(int no, int l, int r){
     lazy[no] = 0;
 }
 
-int query(int no, int i, int j, int l, int r){
+ll query(int no, int i, int j, int l, int r){
     unlazy(no, i, j);
 
     if(i>r || j<l) return 0;
@@ -66,6 +67,9 @@ void update(int no, int i, int j, int l, int r){
 }
 
 int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int n, m;
     cin>>n>>m;
 
