@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // Incompleto
 using namespace std;
 
 #define rep(i, a, b) for(int i = a; i < (b); ++i)
@@ -12,7 +12,7 @@ typedef vector<int> vi;
 
 
 //MAXV = 10^9, MAX_PR = sqrt(MAXN); 
-const int MAX_PR = 50.000;
+const int MAX_PR = 1000000;
 bitset<MAX_PR> isprime;
 vi eratosthenesSieve(int lim) {
 	isprime.set(); isprime[0] = isprime[1] = 0;
@@ -30,7 +30,6 @@ int v[MAXN]; int n;
 //chave: numero e 
 
 int getmask(int k){
-    set<int> numb;
     int mask = 0;
     for(int i =1; i<=n; i++){
         int a = v[i];
@@ -57,7 +56,7 @@ int grundy(int k, int mask){
 
     set<int> states;
 
-    for(int i = 1; i <=20; i++){
+    for(int i = 1; i <=30; i++){
         if(mask < (1<<i)) continue; //jogada invalida
 
         int newmask = (mask>>i)|(mask&((1<<i)-1));
@@ -78,7 +77,7 @@ int main(){
     cin>>n;
     for(int i =1; i<=n; i++) cin>>v[i];
 
-    int sq = (int)sqrt(*max_element(v+1, v+1+n)) + 1;
+    int sq = (int)sqrt(*max_element(v+1, v+1+n)) + 100;
     vi primes = eratosthenesSieve(sq);
 
     int xorval = 0;
@@ -100,11 +99,13 @@ int main(){
 
     for(int p: primes){
         //cout<<"Grundy "<<p<<" = "<<grundy(p, getmask(p))<<"\n";
-        xorval ^= grundy(p, getmask(p));
+        int mask = getmask(p);
+        if(mask > 1);
+            xorval ^= grundy(p, mask);
     }
     //cout<<xorval<<"\n";
     if(xorval == 0) cout<<"Arpa\n";
-    else cout<<"Motjaba\n";
+    else cout<<"Mojtaba\n";
 
     return 0;
 }
