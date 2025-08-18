@@ -13,8 +13,8 @@ int main(){
         cin>>w[i]>>v[i];
     }
 
-    for(int i=0; i<n; i++){
-        for(int j=m; j>0; j--){
+    for(int i=0; i<n; i++){ // iterando pelos objetos
+        for(int j=m; j>0; j--){ // Iterando decrescente pelo peso (pra nao contar 2x)
             if(j-w[i]>=0){
                 dp[j] = max(dp[j], dp[j-w[i]]+v[i]);
             }

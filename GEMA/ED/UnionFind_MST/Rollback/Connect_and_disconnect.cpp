@@ -1,14 +1,15 @@
 #include <bits/stdc++.h> // Codeforces - Connect and Disconnect
 using namespace std;     // Conectividade dinâmica
-#define MAXN 300010      //incompleto
+#define MAXN 300010      // Basicamente usa seg para manter as arestas 
+#define pii pair<int,int>// ativas em um intervalo de tempo e responde offline
 
-stack <pair<int,int>> hist;
+stack <pii> hist;
 int par[MAXN];
 int sz[MAXN];
 int components = 0;
 
-map<pair<int,int>, int> edgeID;
-vector<pair<int,int>> edge;
+map<pii, int> edgeID;
+vector<pii> edge;
 
 int tin [MAXN], tout[MAXN];
 int query[MAXN];
@@ -97,10 +98,6 @@ int main(){
     freopen("connect.in", "r", stdin);
     freopen("connect.out", "w", stdout);
 
-
-    //ios_base::sync_with_stdio(false);
-    //cin.tie(nullptr);
-
     int n, m;
     cin>>n>>m;
     components = n;
@@ -145,12 +142,8 @@ int main(){
 
     for(int i =1; i < idedg; i++){
         updTree(1, 1, timer, tin[i], tout[i],  i);
-        //cout<<"foi "<<i<<"\n";
     }
     
-
-    //cout<<"ate aq foi";
     dfs(1, 1, timer);
-    
     return 0;
 }

@@ -54,8 +54,5 @@ int main(){
         sz[i] = 1;
     }
 
-
-
-
     return 0;
 }
