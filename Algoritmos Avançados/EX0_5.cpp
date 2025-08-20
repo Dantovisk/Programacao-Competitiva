@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++.h>    // Dante Brito Lourenço - 15447326
 #define tup tuple<double, int, string>
 using namespace std;
 
@@ -42,15 +42,14 @@ int main(){
         cin>>nome>>x>>y;
 
         double palpite = haversine(x, y, trueX, trueY);
-        cout<< palpite<<"\n";
         pq.push({palpite, i, nome});
 
         //Fala o melhor palpite até agr
+        auto melhorpalpite = get<0>(pq.top());
+        cout<<"> [AVISO] MELHOR PALPITE: "<<melhorpalpite<<"km\n";
     }
 
-    int numChars = log10(n);
-
-    cout<<"RANKING\n-------\n";
+    cout<<"\nRANKING\n-------\n";
 
     int cont = 1;
     while(!pq.empty()){
@@ -58,10 +57,10 @@ int main(){
         pq.pop();
 
 
-        cout<<right<<setw(numChars)<<cont++<<". ";
-        cout<<left<<setw(20)<<nome;
+        cout<<right<<setw(2)<<cont++;
+        cout<<". "<<left<<setw(20)<<nome;
         
-        cout<<": "<<right<<setw(6)<<palpite;
+        cout<<" : "<<right<<setw(6)<<palpite;
     
         cout<<" km"<<(palpite <0.05? " [FANTASTICO]\n" : "\n");
     }
