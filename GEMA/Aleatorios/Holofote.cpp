@@ -62,6 +62,7 @@ int32_t main(){
     int comb = 1;
     int arranj = 1;
 
+
     for(int i =0; i <= min(k, x); i++){
         int atual = mul(k-i, k-i-1);
         atual = mexp(atual, x-i);
@@ -69,18 +70,15 @@ int32_t main(){
 
         atual = mul(atual, mul(comb, arranj));
 
-        cout<<"i = "<<i<<": "<<atual<<"\n";
+        //cout<<"i = "<<i<<": "<<atual<<"\n";
         resp += atual;
         resp %= mod;
 
 
         int u = i+1;
-        comb = mul(comb, mul(x-u, inv(u)));
+        comb = mul(comb, mul(x-i, inv(i+1)));
 
-        arranj = mul(comb, inv(k-u));
-
-        cout<<arranj<<" "<<comb<<"\n";
-        
+        arranj = mul(arranj, k-i);
     }
 
     
