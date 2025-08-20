@@ -1,4 +1,4 @@
-#include <bits/stdc++.h> // Incompleto
+#include <bits/stdc++.h> // Codeforces - C. Arpa and a game with Mojtaba
 using namespace std;
 
 #define rep(i, a, b) for(int i = a; i < (b); ++i)
@@ -24,10 +24,8 @@ vi eratosthenesSieve(int lim) {
 	return pr;
 }
 
-
 int v[MAXN]; int n; 
 
-//chave: numero e 
 
 int getmask(int k){
     int mask = 0;
@@ -40,7 +38,6 @@ int getmask(int k){
             a/=k;
         }
         mask |= (1<<cont);
-        
     }
 
     return mask;
@@ -49,7 +46,7 @@ int getmask(int k){
 map <pii, int> nimbers;
 
 int grundy(int k, int mask){
-    if(mask == 0) return 0;
+    if(mask <= 1) return 0;
     if(nimbers.find({k, mask}) != nimbers.end()){
         return nimbers[{k, mask}];
     }
@@ -57,7 +54,7 @@ int grundy(int k, int mask){
     set<int> states;
 
     for(int i = 1; i <=30; i++){
-        if(mask < (1<<i)) continue; //jogada invalida
+        if(mask < (1<<i)) break; //jogada invalida
 
         int newmask = (mask>>i)|(mask&((1<<i)-1));
         states.insert(grundy(k, newmask));
@@ -84,15 +81,13 @@ int main(){
     
     for(int i =1; i<=n; i++){
         if(v[i] <= 1) continue;
+        int u = v[i];
         bool primo = true;
-        for(auto p: primes) {
-            if(v[i] % p == 0){
-                primo = false;
-                break;
-            }
+        for(auto p : primes) {
+            while(u % p == 0) u/=p;
         }
 
-        if(primo) primes.push_back(v[i]);
+        if(u>1) primes.push_back(u);
     }
     
     //for(auto p: primes) cout<<p<<"\n";
@@ -100,7 +95,7 @@ int main(){
     for(int p: primes){
         //cout<<"Grundy "<<p<<" = "<<grundy(p, getmask(p))<<"\n";
         int mask = getmask(p);
-        if(mask > 1);
+        if(mask > 1)
             xorval ^= grundy(p, mask);
     }
     //cout<<xorval<<"\n";
