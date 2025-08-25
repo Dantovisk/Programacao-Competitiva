@@ -1,4 +1,4 @@
-#include <bits/stdc++.h> //Line Segment Intersection (Kattis)
+#include <bits/stdc++.h> //Line Segment Distance (Kattis)
 using namespace std;   
 
 
@@ -37,6 +37,13 @@ template<class P> bool onSegment(P s, P e, P p) {
 	return p.cross(s, e) == 0 && (s - p).dot(e - p) <= 0;
 }
 
+typedef Point<double> P;
+double segDist(P& s, P& e, P& p) {
+	if (s==e) return (p-s).dist();
+	auto d = (e-s).dist2(), t = min(d,max(.0,(p-s).dot(e-s)));
+	return ((p-s)*d-(e-s)*t).dist()/d;
+}
+
 template<class P> vector<P> segInter(P a, P b, P c, P d) {
 	auto oa = c.cross(d, a), ob = c.cross(d, b),
 	     oc = a.cross(b, c), od = a.cross(b, d);
@@ -60,18 +67,16 @@ int main(){
 	cout<<fixed<<setprecision(2);
     while(n--){
         Point<double> a, b, c, d;
-        cin >> a.x >> a.y >> b.x >> b.y >> c.x >> c.y >> d.x >> d.y;
+        cin>>a.x>>a.y>>b.x>>b.y>>c.x>>c.y>>d.x>>d.y;
 
-        vector<Point<double>> inter = segInter(a, b, c, d);
-        if(inter.empty()) cout<<"none\n";
-		else{
-			for(auto p: inter) {
-				if(abs(p.x) < 0.01) p.x = 0.0;
-				if(abs(p.y) < 0.01) p.y = 0.0;
-				cout<<p.x<<" "<<p.y<<" ";
-			}
-			cout<<"\n";
+		if(segInter(a, b, c, d).size() > 0){
+			cout<<"0.00\n";
+			continue;
 		}
+
+        double res = min({segDist(a, b, d), segDist(a, b, c),
+		segDist(c, d, a), segDist(c, d, b)});
+        cout<<res<<"\n";
     }
 
     return 0;
