@@ -7,7 +7,8 @@ using namespace std;
 //eh uma segtree de soma
 ll tree[MAXN*4];
 int v[MAXN];
-int lazy[MAXN*4];
+ll lazy[MAXN*4];
+ll passo[MAXN * 4];
 
 void build(int no, int l, int r){
     if(l==r){
@@ -27,15 +28,19 @@ void unlazy(int no, int l, int r){
     //o no pai usara a soma da pa para obter seu valor
     if(lazy[no]==0) return;
 
-    tree[no] += ((2*lazy[no] + (r-l)) * (r- l +1))/2;
+    tree[no] += (((2LL*lazy[no] + passo[no]*(r-l)) * (1LL + r- l ))/2LL);
 
     if(l!=r){
         int mid = (l+r)/2;
         lazy[no*2] += lazy[no];
-        lazy[no*2 + 1] += lazy[no] + (mid-l);
+        lazy[no*2 + 1] += lazy[no] + (ll)(mid-l + 1)*passo[no];
+        
+        passo[no*2] += passo[no];
+        passo[no*2 + 1] += passo[no];
     }
 
     lazy[no] = 0;
+    passo[no] = 0;
 }
 
 ll query(int no, int i, int j, int l, int r){
@@ -54,6 +59,7 @@ void update(int no, int i, int j, int l, int r){
 
     if(i>= l && j<=r){
         lazy[no] += (i-l)+1;
+        passo[no] ++;
         unlazy(no, i, j);
         return;
     }
