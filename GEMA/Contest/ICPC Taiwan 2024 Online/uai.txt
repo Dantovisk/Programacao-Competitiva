@@ -1,0 +1,27 @@
+E - DPzona de intervalo? (se par q nao)
+itera por entre quais pedras podemos colocar uma nova pedras
+Verifica qual lado é mais facil de empurrar iterativamente
+Vai adicionando um ao custo da direita e ao da esquerda quando encostar uma pedra no limite maximo.
+
+O(n^2), chato q só a desgraça de codar
+
+H - Ad hoczao insano
+1 2 . 3 4    (2)
+1 . 2 3 4    (3)
+1 3 2 . 4    (2)
+1 3 . 2 4    (1)
+. 3 1 2 4
+aqui morreu, o 1 e o 2 tão bloqueando o 4
+
+
+I: fatora essa bomba
+5 * 2^3
+2^5
+7 * 3 * 2^2
+7 * 3 * 2
+2^4
+2^4 * 3
+3^2
+
+
+
