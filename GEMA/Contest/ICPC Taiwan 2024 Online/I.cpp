@@ -18,37 +18,60 @@ vi fac(int u){
     return res;
 }
 
-bool verifica(int st){
-    cout<<"verificando "<<st<<"\n";
-    int k = st;
-    for(int i = 1; i<n; i++){
-        if(v[i] % k) return false;
-        k = v[i]/k;
+bool verifica(int id, int start){
+    if(v[id] % start) return false;
+
+    int u = v[id]/start;
+    if(u > 100) return false;
+
+    //vai de 1 até n-1
+    vector<bool> vis(n);
+    vector<int> res;
+
+    res.push_back(start);
+    res.push_back(u);
+
+    vis[id] = 1;
+    int cont = 1;
+    
+    for(int i = 1; i<n-1; i++){
+        for(int j = 1; j<n; j++){
+            if(vis[j]) continue;
+            if(v[j] % u == 0 && v[j]/u <= 100){
+                u = v[j] / u;
+                vis[j] = 1;
+                cont++;
+                res.push_back(u);
+                break;
+            }
+        }
+        if(cont < i+1) return false;
     }
+
+    cout<<"Yes\n";
+    for(auto x: res) cout<<x<<" ";
     return true;
 }
 
 int main(){
     cin>>n;
 
+    random_device rd;
+    mt19937 g(rd());
+
     for(int i =1; i<n; i++) cin>>v[i];
 
-    int k = 1;
-    vi f = fac(v[1]);
-
-    for(auto x: f){
-        k*= x;
-        if(verifica(k)){
-            cout<<"Yes\n";
-            int z = k;
-            cout<<z<<" ";
-            for(int i = 1; i<n; i++){
-                z = v[i]/k;
-                cout<<z<<" ";
+    int quant= 40;
+    while(quant--){
+        for(int i =1; i<n; i++){
+            for (int j = 1; j<= min(v[i], 100); j++){
+                if(verifica(i, j)) return 0;
             }
-            return 0;
         }
+
+        shuffle(v + 1, v + n, g);
     }
+    
 
     cout<<"No\n";
     return 0;

@@ -1,5 +1,5 @@
-#include <bits/stdc++.h>    // DSU diferenciado para bipartição dinâmica
-using namespace std;        // Nao sei fazer ainda
+#include <bits/stdc++.h>    //Errado - Preciso aprender interpolação
+using namespace std;      
 
 #define rep(i, a, b) for(int i = a; i < (b); ++i)
 #define all(x) begin(x), end(x)
