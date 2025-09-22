@@ -2,8 +2,10 @@
 
 using namespace std;
 
+const double EPS = 1e-3;
+
 // Mapeia o nível do herói para a sua produtividade
-map <string, float> produtividade = 
+map <string, double> produtividade = 
     {{"Aprendiz", 0.75},
     {"Aventureiro", 1.00},
     {"Cavaleiro", 1.20},
@@ -16,12 +18,11 @@ void solve(){
     vector<vector<int>> adj(m+1); // adj[i] = lista de quests que dependem da quest i
     vector<int> grau(m+1, 0); // grau[i] = número de pré-requisitos que a quest i ainda precisa completar
 
-    vector<pair<float, string>> herois; //par(produtividade, nome) do i-ésimo herói
+    vector<pair<double, string>> herois; //par(produtividade, nome) do i-ésimo herói
     vector<vector<int>> tasks(n);    // tasks[i] = lista de quests atribuídas ao i-ésimo herói
-    vector<float> tempo (n, 0);    // tempo[i] = tempo acumulado que o i-ésimo herói gastou até agora
-    vector<float> custo(m+1, 0);    // custo[i] = custo base da quest i (em tempo)
-    vector<float> liberation_time (m+1, 0); // liberation_time[i] = tempo em que a quest i fica liberada (todos pré-requisitos concluídos)
-    
+    vector<double> tempo (n, 0);    // tempo[i] = tempo acumulado que o i-ésimo herói gastou até agora
+    vector<double> custo(m+1, 0);    // custo[i] = custo base da quest i (em tempo)
+    vector<double> liberation_time (m+1, 0); // liberation_time[i] = tempo em que a quest i fica liberada (todos pré-requisitos concluídos)
 
     for(int i = 0; i<n; i++){
         string nome, classe;
@@ -29,11 +30,11 @@ void solve(){
 
         herois.push_back({produtividade[classe], nome});
     }
-    //sort(herois.rbegin(), herois.rend());
+    //sort(ordem.rbegin(), ordem.rend());
 
     for(int i = 0; i<m; i++){
         int id;
-        float cost;
+        double cost;
         cin>>id>>cost;
 
         custo[id] = cost;
@@ -50,23 +51,26 @@ void solve(){
 
     // Fila de quests prontas para alocação
     queue<int> pronto;
+    //priority_queue<int, vector<int>, greater<int>> pronto;
 
     // Sempre começando da "quest 0", que é fictícia e já pronta
     pronto.push(0);
 
-    float res = 0; // tempo total mínimo para completar todas as quest (resposta)
+    double res = 0; // tempo total mínimo para completar todas as quest (resposta)
 
     while(!pronto.empty()){
         int u = pronto.front();
+        // int u = pronto.top();
         pronto.pop();
 
-        float best = 1e7 + 6;
+        double best = 1e8 + 6;
         int goat = 0;
+
         for(int i =0; i<n; i++){
             // Define o tempo em que a tarefa u será desbloqueada:
             // Será o máximo entre o tempo que o heroi i deixa de estar ocupado
             // vs o tempo que as dependências da tarefa u são concluídas.
-            float tempo_inicio = max(tempo[i], liberation_time[u]);
+            double tempo_inicio = max(tempo[i], liberation_time[u]);
 
             // Se o heroi atual vai terminar a tarefa antes do melhor encontrado
             // até agora, vale a pena pegar
