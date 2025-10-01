@@ -35,6 +35,9 @@ pii red(int a, int b){
     return {a/k, b/k};
 }
 pii calc(pii a, pii b) {
+    // cout<<"Calc\n";
+    // cout<<a.ff<<" "<<a.ss<<"\n";
+    // cout<<b.ff<<" "<<b.ss<<"\n";
 	
 	ll h1 = min(a.ff, b.ff);
     ll h2 = max(a.ff, b.ff);
@@ -42,16 +45,15 @@ pii calc(pii a, pii b) {
     ll htrue;
     if(a.ff>b.ff){
         htrue = a.ff - h[a.ss+1];
+        if(h[a.ss+1] > b.ff) return {0, 1};
     }else{
         htrue = b.ff - h[b.ss-1];
+        if(h[b.ss-1] > a.ff) return {0, 1};
     }
 
     ll k = b.ss-a.ss;
 
-
-
-    ll den = htrue, num = k*h2 - (h2 - h1);
-    cout<<(h2-h1)<<"/"<<h2<<"\n";
+    ll den = htrue, num = k*htrue - (h2 - h1);
 
     return red(num*1000LL, den*1000LL);
 }
@@ -74,8 +76,8 @@ void solve() {
 			
 			pii xd = calc(*it,{h[i],i});
             if(res.ff*xd.ss < xd.ff*res.ss) res = xd;
-            cout<<i<<": "<<xd.ff<<"/"<<xd.ss<<"\n";
-            cout<<(*it).ff<<" "<<(*it).ss<<"\n";
+            // cout<<i<<": "<<xd.ff<<"/"<<xd.ss<<"\n";
+            // cout<<(*it).ff<<" "<<(*it).ss<<"\n";
 
 		}else{
 			auto it = esq.begin();
