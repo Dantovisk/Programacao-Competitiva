@@ -5,7 +5,7 @@ using namespace std;
 using Point = pair<double,double>;
 typedef vector<int> vi;
 
-const double EPS = 1e-9;
+const double EPS = 1e-8;
 
 
 Point add(Point a, Point b){ return {a.ff+b.ff, a.ss+b.ss};}
@@ -18,6 +18,10 @@ double cross(Point v1, Point v2){
     return v1.ff*v2.ss-v1.ss*v2.ff;;
 }
 
+double cross2(Point& pivo, Point& v1, Point& v2){
+    return cross(sub(v1, pivo), sub(v2, pivo));
+}
+
 double norm(Point a){
     return sqrt(esc(a, a));
 }
@@ -26,14 +30,7 @@ double dist(Point a, Point b){
     return norm(sub(a, b));
 }
 
-bool counterclock(Point a, Point b, Point c){
-    Point v1 = sub(b, a), v2 = sub(c, b);
-    double cross = v1.ff*v2.ss-v1.ss*v2.ff;
-    if(cross<0) return true;
-    return false;
-}
-
-vector <Point> grahamScan(vector<Point> pts){
+vector <int> grahamScan(vector<Point>& pts){
     //encontra o indice do pivo
     int ind = int(min_element(pts.begin(), pts.end()) - pts.begin());
     vi cand, hull{ind};
@@ -47,20 +44,17 @@ vector <Point> grahamScan(vector<Point> pts){
         Point v1 = sub(pts[a],pts[ind]), v2 = sub(pts[b], pts[ind]);
         double orient = cross(v1, v2);
 
-        return (orient < EPS ? orient > 0 : norm(v1) < norm(v2));
+        return (fabs(orient) > EPS ? (orient > 0) : (norm(v1) < norm(v2)));
     });
 
-
     for(auto c: cand){
-        while(hull.size() > 1){
-            if(counterclock(pts[hull[hull.size()-2]], pts[hull.back()], pts[c])) break;
-            cand.pop_back();
+        while(hull.size() > 1 && cross2(pts[hull[hull.size() - 2]], pts[hull.back()], pts[c]) < -EPS){
+            hull.pop_back();
         }
-        cand.push_back(c);
+        hull.push_back(c);
     }
-    
 
-    return {};
+    return hull;
 }
 
 void solve(int caso){
@@ -71,28 +65,31 @@ void solve(int caso){
         cin>>a>>b;
         pts.push_back({a, b});
     }
-    vector<Point> res = grahamScan(pts);
+    vector<int> res = grahamScan(pts);
 
-    cout<<"Caso "<<caso<<"\n";
-    cout<<"Tamanho do colar: "<<res.size();
+    cout<<"Caso "<<caso<<":\n";
+    cout<<"Tamanho do colar: "<<res.size()<<"\n";
     cout<<"Pedras ancestrais: ";
 
     cout<<fixed<<setprecision(4);
 
     for(int i =0; i<res.size(); i++){
-        auto[a, b] = res[i];
+        auto[a, b] = pts[res[i]];
         cout<<"("<<a<<","<<b<<")";
         if(i < res.size()-1)cout<<",";
     }
+    cout<<"\n";
 }
 
 int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
     int t; cin>>t;
 
     for(int i =1; i<= t; i++){
         solve(i);
-        if(i<t) cout<<"\n";
+        cout<<"\n";
     }
 
     return 0;
