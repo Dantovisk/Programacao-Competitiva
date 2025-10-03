@@ -8,7 +8,6 @@ vector<int> v;
 map <pair<int, ll>, int> nims;
 
 // a é o restante de pedras na pilha
-// b é o limite superior de pedras que podem ser usadas
 int nimbers(int a, ll mask){
     if(nims.find({a, mask}) != nims.end()){
         return nims[{a, mask}];
