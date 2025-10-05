@@ -25,8 +25,6 @@ int main(){
     dp[0][0] = 0;
 
     for(int i =1; i<=n; i++){
-        ll k = min(dp[i-1][0], max(dp[i-1][1]-(i-1), 0LL));
-
         dp[i][0] = min(dp[i-1][0], dp[i-1][1]) + v[i];
 
         dp[i][1] = min(dp[i-1][1] + (v[i] - 1LL), dp[i-1][0] + max(v[i] - (i-1), 0LL));
