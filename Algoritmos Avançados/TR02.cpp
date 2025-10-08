@@ -2,6 +2,10 @@
 
 using namespace std;
 
+// Epsilon para comparação de igualdade entre doubles
+const double EPS = 1e-9;
+
+
 // IMPLEMENTAÇÃO DO DISJOINT SET UNION (UNION FIND)
 struct UF{
     vector<int> sz, pai;
@@ -86,8 +90,8 @@ void solve(){
 
     cout<<fixed<<setprecision(2);
     for(auto [dist, a, b]: arestasSelecionadas){
-        cout<< min(sistemas[a], sistemas[b]) <<", ";
-        cout<< max(sistemas[a], sistemas[b]) <<", "<<dist<<"\n";
+        cout<< sistemas[a] <<", ";
+        cout<< sistemas[b] <<", "<<dist<<"\n";
     }
 
     //-------------------------------------------
@@ -108,7 +112,7 @@ void solve(){
     int ponteiro_remocao = 0;
 
     for(int i =0; i< pontos.size(); i++){
-        auto [currX, currY, id] = pontos[i];
+        auto [currX, currY, currId] = pontos[i];
 
         // Remove os pontos que abertos que estão mais distantes em X do ponto atual
         // Do que a menor distância encontrada
@@ -134,22 +138,35 @@ void solve(){
             double newDist = sqrt(pow(currX-candX, 2)+ pow(currY-candY, 2));
 
             // Encontrou um candidado melhor
-            if(newDist < minDist){
+            if(newDist < minDist - EPS){
                 minDist = newDist;
-                melhor1 = id;
+                melhor1 = currId;
                 melhor2 = candidatoID;
+            }
+            // No caso de empate, mantemos o que apareceu antes no input
+            else if(abs(newDist - minDist) < EPS){
+                int comp1 = currId, comp2 = candidatoID;
+                int comp3 = melhor1, comp4 = melhor2;
+                if(comp1 > comp2) swap(comp1, comp2);
+                if(comp3 > comp4) swap(comp3, comp4);
+
+                // Atualiza somente se o novo par for estritamente menor que o melhor par atual
+                if (make_pair(comp1, comp2) < make_pair(comp3, comp4)) {
+                    melhor1 = currId;
+                    melhor2 = candidatoID;
+                }
             }
 
             ++it_lower;
         }
 
-        abertos.insert({currY,id});
+        abertos.insert({currY,currId});
     }
 
-    // Imprime em ordem alfabética
-    if(sistemas[melhor1] > sistemas[melhor2]) swap(melhor1, melhor2);
+    // Imprime em ordem de entrada
+    if(id[sistemas[melhor1]] > id[sistemas[melhor2]]) swap(melhor1, melhor2);
 
-    cout<<"Ponto Ressonância: "<<sistemas[melhor1]<<", "<<sistemas[melhor2]<<", ";
+    cout<<"Ponto de Ressonância: "<<sistemas[melhor1]<<", "<<sistemas[melhor2]<<", ";
     cout<<minDist<<"\n";
 }
 

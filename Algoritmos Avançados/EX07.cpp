@@ -21,6 +21,7 @@ int main(){
         cin>>v[i];
     }
 
+    // Caso base
     dp[0][1] = 1;
     dp[0][0] = 0;
 
@@ -28,7 +29,6 @@ int main(){
         dp[i][0] = min(dp[i-1][0], dp[i-1][1]) + v[i];
 
         dp[i][1] = min(dp[i-1][1] + (v[i] - 1LL), dp[i-1][0] + max(v[i] - (i-1), 0LL));
-        // cout<<i<<": "<<dp[i][0]<<" "<<dp[i][1]<<"\n";
     }
 
     cout<<min(dp[n][0], dp[n][1])<<"\n";
