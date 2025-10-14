@@ -16,7 +16,7 @@ vector<ll> sos_dp(vector<ll> f) {
 	return f;
 }
 
-// soma de super-conjunto
+// o inverso da sos dp
 vector<ll> sos_dp_inv(vector<ll> f) {
 	int N = __builtin_ctz(f.size());
 	assert((1<<N) == f.size());
