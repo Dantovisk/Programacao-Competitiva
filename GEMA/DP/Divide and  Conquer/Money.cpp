@@ -21,7 +21,7 @@ vi consV, consH;
 
 vi horB, verB;
 
-// intervalo de busca de produtor, intervalo de busca do produtor
+// intervalo de busca de produtor, intervalo de busca do consumidor
 ll solve(int st, int ed, int l, int r){
     if(st > ed || l > r) return -1;
 
@@ -49,7 +49,6 @@ ll solve(int st, int ed, int l, int r){
         solve(mid+1, ed, best.ss, r)});
     }
 
-    // Isso aqui dá TLE, preciso achar um jeito melhor
     return max({best.ff, 
         solve(st, mid-1, l, r),
         solve(mid+1, ed, l, r)});

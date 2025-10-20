@@ -17,6 +17,7 @@ int dp[MAX][55];
 
 const int inf = 1e9+7;
 
+// Sliding Window para manter quantos caras diferentes tem no intervalo:
 int diff = 0;
 int cnt[MAX];
 int currL = 1, currR = 0;
@@ -47,17 +48,21 @@ void updt(int l, int r){
     while(currL < l) addL();
     while(currR > r) subR();
 }
+// Fim da sliding window
 
 // A ordem importa, escolher o mais a esquerda deixa bem mais lento
+// [st, ed] é o intervalo atual da dp
+// [l, r] é o intervalo de busca do cara que maximiza dp[mid]
 void solve(int k, int st, int ed, int l, int r){
-    int mid = (st + ed)/2;
+    int mid = (st + ed)/2; //Mid é o pivô do nosso intervalo
     pair <int, int> best = {-inf, -1};
 
     for(int i = min(r, mid); i >= max(l,1); i--){
-        updt(i, mid);
+        updt(i, mid); //altera o intervalo da sliding window
 
         int cost = diff + dp[i-1][k-1];
 
+        //salva o melhor à direita
         best = max(best, {cost, i});
     }
 
@@ -80,6 +85,7 @@ int main(){
         dp[i][0] = diff;
     }
 
+    //Chama a recursão para cada estado (calcula tudo para um numero de caixas)
     for(int i = 1; i<m; i++){
         solve(i, 1, n, i, n);
     }

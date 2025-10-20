@@ -20,16 +20,15 @@ const double inf = 1e16+7;
 
 void solve(int k, int st, int ed, int l, int r){
     int mid = (st + ed)/2;
-    // cout<<k<<" "<<st<<" "<<ed<<" "<<l<<" "<<r<<"\n";
+
     pair <double, int> best = {inf, -1};
     for(int i = l; i<= min(r, mid); i++){
         double cost = dp[i-1][k-1] + pref[mid] - pref[i-1] 
         - (inv[mid] - inv[i-1])*sum[i-1];
+        
         best = min(best, {cost, i});
-        // cout<<cost<<" ";
     }
     dp[mid][k] = best.first;
-    // cout<<best.first<<"\n";
 
     if(st==ed) return;
     solve(k, st, mid, l, best.second);
