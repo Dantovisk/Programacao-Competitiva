@@ -52,9 +52,6 @@ void solve(){
         cres.push_back({best, i});
     }
 
-    // for(auto [w, id]: cres)cout<<"["<<w<<" , "<<id<<"] ";
-    // cout<<"\n";
-
     rep(i, 0, m){
         int q; cin>>q;
 
