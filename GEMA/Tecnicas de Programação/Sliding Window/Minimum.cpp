@@ -42,7 +42,6 @@ int32_t main() {
 
     rep(i, 0, n-k+1){
         ins(v[i+k-1], i+k-1);
-        // cout<<d.front().first<<" ";
         xors ^= d.front().first;
     }
 
