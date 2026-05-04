@@ -12,56 +12,13 @@ typedef vector<int> vi;
 
 const ll inf = 1e15+2;
 const int MAX = 2e3+5;
+const double eps = 1e-7;
 
 //dest, peso
 vector<pii> adj[MAX];
 int n, m;
 
-int mn[MAX];
-ll dist[MAX];
-void dijkstra(){
-    rep(i, 0, n+1) {
-        dist[i] = inf;
-    }
-    
-    dist[1] = 0;
-    mn[1] = 0;
-
-    //qtd arestas, peso do caminho, vertice
-    priority_queue <pii, vector<pii>, greater<pii>> pq;
-    pq.push({0, 1});
-    while(!pq.empty()){
-        auto [w1, u] = pq.top();
-        pq.pop();
-
-        if(dist[u] < w1) continue;
-
-        for(auto [v, w] : adj[u]){
-            if(dist[u] + w > dist[v]) continue;
-            if(dist[u] + w == dist[v]){
-                mn[v] = max(mn[v], mn[u]+1);
-                continue;
-            }
-            dist[v] = dist[u] + w;
-            mn[v] = mn[u] + 1;
-            pq.push({dist[v], v});
-        }
-    }
-}
-
 set<int> foi;
-
-int vis[MAX];
-void dfs1(int u){
-    foi.insert(u);
-    vis[u] = 1;
-    for(auto [v, w]: adj[u]){
-        if(vis[v]) continue;
-        if(dist[v] == dist[u] - w){
-            dfs1(v);
-        }
-    }
-}
 
 ll dist2[MAX][MAX];
 
@@ -81,6 +38,7 @@ void dijkstra2(){
 
         // cout<<"vertice: "<<u<<", len = "<<len<<"\n";
         if(dist2[len][u] < w1) continue;
+        if(len >= n) continue;
         // cout<<"FOI!!!!\n";
 
         for(auto [v, w] : adj[u]){
@@ -103,6 +61,7 @@ void dfs2(int u, int len){
     }
 }
 
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin.exceptions(cin.failbit);
@@ -115,19 +74,61 @@ int main() {
         adj[a].pb({b, w});
         adj[b].pb({a, w});
     }
-    dijkstra();
-    dfs1(n);
 
     dijkstra2();
     ll last = inf;
-    for(int i = 1; i< mn[n]; i++){
+
+    //{a, b} tq f(x) = ax + b
+    vector<pair<ll, ll>> lines;
+
+    for(int i = 1; i<= n; i++){
         if(dist2[i][n] >= inf) continue;
 
-        if(dist2[i][n] >= last) continue;
+        // cout<<"Adicionando:";
+        // cout<<dist2[i][n]<<" com tam "<<i<<"\n";
 
-        last = dist2[i][n];
+        lines.emplace_back(i, dist2[i][n]);
+    }
+
+    rep(i, 0, lines.size()){
+        auto [a, b] = lines[i];
+
+        double l = 0, r = inf;
+
+        int da = 1;
+
+        rep(j, 0, lines.size()){
+            if(i == j) continue;
+            auto [a2, b2] = lines[j];
+            
+            if(a2 == a){
+                if(b > b2){
+                    da = 0;
+                    break;
+                }
+            }else{
+                double inter = b2-b;
+                inter /= (a-a2);
+                if(a2 > a){
+                    l = max(inter, l);
+                }else{
+                    r = min(inter, r);
+                }
+            }
+        }
+
+
+        if(l-r > eps) da = 0;
+
+        if(!da) continue;
+        ll dijk = b;
+        ll ds = a;
+        // cout<<"Bora visitar!\n";
+        // cout<<dijk<<" com tam "<<ds<<"\n";
+        // cout<<"limites: "<<l<<" "<<r<<"\n";
+
         rep(j, 0, n+1) vis2[j] = 0;
-        dfs2(n, i);
+        dfs2(n, ds);
     }
 
     // rep(i, 1, n){
