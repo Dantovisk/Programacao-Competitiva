@@ -30,19 +30,101 @@ array<vi, 2> manacher(const string& s) {
 	return p;
 }
 
+const int inf = 1e9+7;
+const int MAX = 2e5+3;
+
+// SegTree
+//
+// Recursiva com Lazy Propagation
+// Query: soma do range [a, b]
+// Update: soma x em cada elemento do range [a, b]
+// Pode usar a seguinte funcao para indexar os nohs:
+// f(l, r) = (l+r)|(l!=r), usando 2N de memoria
+//
+// Complexidades:
+// build - O(n)
+// query - O(log(n))
+// update - O(log(n))
+namespace seg {
+	ll seg[4*MAX], lazy[4*MAX];
+	int n, *v;
+
+	ll build(int p=1, int l=0, int r=n-1) {
+		lazy[p] = -1;
+		if (l == r) return seg[p] = v[l];
+		int m = (l+r)/2;
+		return seg[p] = min(build(2*p, l, m), build(2*p+1, m+1, r));
+	}
+	void build(int n2, int* v2) {
+		n = n2, v = v2;
+		build();
+	}
+	void prop(int p, int l, int r) {
+        if(lazy[p] == -1) return;
+		seg[p] = min(lazy[p], seg[p]);
+		if (l != r) {
+            lazy[2*p] = min(lazy[p], (lazy[2*p] != -1 ? lazy[2*p] : inf));
+            lazy[2*p+1] = min(lazy[p], (lazy[2*p+1] != -1 ? lazy[2*p+1] : inf));
+        }
+		lazy[p] = -1;
+	}
+	ll query(int a, int b, int p=1, int l=0, int r=n-1) {
+		prop(p, l, r);
+		if (a <= l and r <= b) return seg[p];
+		if (b < l or r < a) return inf;
+		int m = (l+r)/2;
+		return min(query(a, b, 2*p, l, m), query(a, b, 2*p+1, m+1, r));
+	}
+	ll update(int a, int b, int x, int p=1, int l=0, int r=n-1) {
+		prop(p, l, r);
+		if (a <= l and r <= b) {
+			lazy[p] = x;
+			prop(p, l, r);
+			return seg[p];
+		}
+		if (b < l or r < a) return seg[p];
+		int m = (l+r)/2;
+		return seg[p] = min(update(a, b, x, 2*p, l, m),
+			update(a, b, x, 2*p+1, m+1, r));
+	}
+};
+
+int st[MAX];
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin.exceptions(cin.failbit);
 
     string s; cin>>s;
+    int n = sz(s);
 
     array<vi, 2> man = manacher(s);
 
     vi res(sz(s), 1);
 
+    rep(i, 0, n) st[i] = i*2+1;
+    seg::build(n, st);
+
     rep(i, 0, sz(s)){
-        
+        // cout<<man[0][i]<<" ";
+        if(man[0][i])
+            seg::update(i, i + man[0][i] - 1 , i*2);
+        if(man[1][i])    
+            seg::update(i, i + man[1][i], i*2 + 1);
     }
 
-    for(auto x: res) cout<<x<<"\n";
+
+    rep(i, 0, n){
+        int k = seg::query(i, i);
+        int ds = (i - (k / 2) + 1)*2;
+
+        // cout<<"l("<<i<<") = "<<k<<"\n";
+        int res = ds - k%2;
+        
+        cout<<res<<" ";
+    }
+    cout<<"\n";
+    // for(auto x: res) cout<<x<<"\n";
+
+
 }
